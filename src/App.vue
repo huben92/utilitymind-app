@@ -72,7 +72,7 @@ onUnmounted(()=>{window.removeEventListener('hashchange',syncHash);window.remove
   <div v-else class="shell vue-page min-h-screen dark:!bg-[#222] pr-3">
     <aside class="sidebar !bg-[#eee] dark:!bg-[#222] !border-none" :class="{ 'mobile-open': sidebar }">
       <a class="brand" href="#overview" :aria-label="`${brandName} overview`"
-        ><span class="brand-mark !text-white">W<ArrowUpRight :size="11" aria-hidden="true" /></span
+        ><span class="brand-mark !text-white">U<ArrowUpRight :size="11" aria-hidden="true" /></span
         ><span><strong>{{ brandName }}</strong><small>UTILITY INTELLIGENCE</small></span></a
       >
       <nav class="sidebar-nav" aria-label="Main navigation">

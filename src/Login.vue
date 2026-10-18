@@ -10,7 +10,7 @@ const form = reactive({ username: '', password: '' })
   <main class="login-page min-h-screen grid place-items-center p-4">
     <form class="login-card panel w-full" @submit.prevent="emit('submit', { ...form })">
       <div class="login-brand">
-        <span class="brand-mark">W<ArrowUpRight :size="11" aria-hidden="true" /></span>
+        <span class="brand-mark">U<ArrowUpRight :size="11" aria-hidden="true" /></span>
         <div><strong>UTILITYMIND</strong><small>OPERATIONS INTELLIGENCE</small></div>
       </div>
       <span class="eyebrow">SECURE DASHBOARD ACCESS</span>
