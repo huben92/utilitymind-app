@@ -2,7 +2,7 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { api, fmt } from './lib'
 import { Plus, Search, X } from '@lucide/vue'
-const props = defineProps({ page: String, data: Object, canEdit: {type:Boolean,default:true} })
+const props = defineProps({ page: String, data: Object, canEdit: {type:Boolean,default:true}, canAdd: {type:Boolean,default:true} })
 const emit = defineEmits(['changed','notice'])
 const config = {
   factories:{ columns:[['name','Factory'],['code','Code'],['description','Description']],fields:[['name','Factory name','text'],['code','Code','text'],['description','Description','text']] },
@@ -35,7 +35,7 @@ async function remove(row){if(!confirm(`Delete ${row.name||row.id}? Items with r
           baselines are calculated separately.
         </p>
       </div>
-      <button v-if="canEdit" class="button primary" @click="open()">
+      <button v-if="canEdit && canAdd" class="button primary" @click="open()">
         <Plus class="inline-icon" :size="15" aria-hidden="true" /> Add record
       </button>
     </div>

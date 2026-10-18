@@ -37,15 +37,17 @@ const groups = [
     ['metering', Gauge, 'Metering'],
   ] },
 ]
+const visibleGroups=computed(()=>groups.map(group=>({ ...group, items:group.items.filter(item=>auth.value?.role!=='factory_admin'||item[0]!=='ai_chat') })))
+const brandName=computed(()=>auth.value?.role==='factory_admin'?(data.value?.factories?.[0]?.name||'UTILITYMIND'):'UTILITYMIND')
 const utilityItems=computed(()=>auth.value?.role==='super_admin'?[['app_settings',Settings,'App Settings'],['users',Users,'User management']]:[])
 const known=new Set(Object.keys(titles))
 const hash=ref(location.hash.slice(1)||'overview'),data=ref(null),trends=ref(null),detail=ref(null),error=ref(''),sidebar=ref(false),searchOpen=ref(false),search=ref(''),toast=ref(''),toastError=ref(false),userMenu=ref(false),userMenuWrap=ref(null)
-const page=computed(()=>{const requested=hash.value.startsWith('category/')?'category':known.has(hash.value)?hash.value:'overview';return ['app_settings','users'].includes(requested)&&auth.value?.role!=='super_admin'?'overview':requested})
+const page=computed(()=>{const requested=hash.value.startsWith('category/')?'category':known.has(hash.value)?hash.value:'overview';return (['app_settings','users'].includes(requested)&&auth.value?.role!=='super_admin')||(requested==='ai_chat'&&auth.value?.role==='factory_admin')?'overview':requested})
 const category=computed(()=>{try{return page.value==='category'?decodeURIComponent(hash.value.slice(9)):null}catch{return null}})
 const reportPage=computed(()=>['daily_report','monthly_report'].includes(page.value))
 const masterPage=computed(()=>['factories','locations','production_lines','machines','metering'].includes(page.value))
 const title=computed(()=>page.value==='category'?`${category.value} metering`:titles[page.value])
-const searchMatches=computed(()=>[...groups.flatMap(g=>g.items),...utilityItems.value,['account',UserRound,'Account']].filter(item=>item[2].toLowerCase().includes(search.value.toLowerCase())))
+const searchMatches=computed(()=>[...visibleGroups.value.flatMap(g=>g.items),...utilityItems.value,['account',UserRound,'Account']].filter(item=>item[2].toLowerCase().includes(search.value.toLowerCase())))
 let dashboardBusy=false,trendBusy=false,detailBusy=false,toastTimer,dashboardTimer,detailTimer
 function syncHash(){hash.value=location.hash.slice(1)||'overview';sidebar.value=false;searchOpen.value=false;userMenu.value=false;window.scrollTo(0,0)}
 function closeUserMenuOutside(event){if(userMenu.value&&!userMenuWrap.value?.contains(event.target))userMenu.value=false}
@@ -69,9 +71,9 @@ onUnmounted(()=>{window.removeEventListener('hashchange',syncHash);window.remove
   <Login v-else-if="!auth" :busy="authBusy" :error="authError" @submit="signIn" />
   <div v-else class="shell vue-page min-h-screen dark:!bg-[#222] pr-3">
     <aside class="sidebar !bg-[#eee] dark:!bg-[#222] !border-none" :class="{ 'mobile-open': sidebar }">
-      <a class="brand" href="#overview" aria-label="Wheelworks overview"
+      <a class="brand" href="#overview" :aria-label="`${brandName} overview`"
         ><span class="brand-mark !text-white">W<ArrowUpRight :size="11" aria-hidden="true" /></span
-        ><span><strong>WHEELWORKS</strong><small>UTILITY INTELLIGENCE</small></span></a
+        ><span><strong>{{ brandName }}</strong><small>UTILITY INTELLIGENCE</small></span></a
       >
       <nav class="sidebar-nav" aria-label="Main navigation">
         <button
@@ -88,7 +90,7 @@ onUnmounted(()=>{window.removeEventListener('hashchange',syncHash);window.remove
           <div class="border px-1 py-0.5 ml-auto leading-none rounded-md border-slate-300 dark:border-[#333]">⌘K</div>
         </button>
 
-        <div v-for="group in groups" :key="group.label" class="sidebar-group">
+        <div v-for="group in visibleGroups" :key="group.label" class="sidebar-group">
           <div v-if="group.label" class="nav-label nav-sub">{{ group.label }}</div>
           <a
             v-for="[id, icon, label] in group.items"
@@ -192,7 +194,7 @@ onUnmounted(()=>{window.removeEventListener('hashchange',syncHash);window.remove
             <Menu :size="18" aria-hidden="true" />
           </button>
           <div class="breadcrumb">
-            WHEELWORKS <span>/</span>
+            {{ brandName.toUpperCase() }} <span>/</span>
             <span>{{ (page === "category" ? category : titles[page]).toUpperCase() }}</span>
           </div>
         </div>
@@ -216,6 +218,7 @@ onUnmounted(()=>{window.removeEventListener('hashchange',syncHash);window.remove
         :page="page"
         :data="data"
         :can-edit="auth.role !== 'viewer'"
+        :can-add="auth.role !== 'viewer' && (auth.role !== 'factory_admin' || page !== 'factories')"
         @changed="loadDashboard"
         @notice="notify"
       /><AppSettings v-else-if="page === 'app_settings'" /><UserManagement

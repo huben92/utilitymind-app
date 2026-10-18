@@ -3,13 +3,13 @@ import { ref, reactive, onMounted } from 'vue'
 import { api } from './lib'
 import { Plus, X } from '@lucide/vue'
 const props=defineProps({currentUser:Object})
-const users=ref([]),status=ref(''),busy=ref(false),editing=ref(null),show=ref(false),created=ref(null)
-const form=reactive({username:'',role:'viewer',enabled:true,password:''})
-const roles=[['super_admin','Super admin'],['admin','Admin'],['viewer','Viewer']]
-async function load(){try{const response=await api('/api/users');users.value=response.users;status.value=`${users.value.length} ${users.value.length===1?'user':'users'}`}catch(e){status.value=e.message}}
-function open(user=null){editing.value=user;form.username=user?.username||'';form.role=user?.role||'viewer';form.enabled=user?.enabled??true;form.password='';show.value=true;created.value=null}
+const users=ref([]),factories=ref([]),status=ref(''),busy=ref(false),editing=ref(null),show=ref(false),created=ref(null)
+const form=reactive({username:'',role:'viewer',factory_id:'',enabled:true,password:''})
+const roles=[['super_admin','Super admin'],['admin','Admin'],['factory_admin','Factory admin'],['viewer','Viewer']]
+async function load(){try{const response=await api('/api/users');users.value=response.users;factories.value=response.factories||[];status.value=`${users.value.length} ${users.value.length===1?'user':'users'}`}catch(e){status.value=e.message}}
+function open(user=null){editing.value=user;form.username=user?.username||'';form.role=user?.role||'viewer';form.factory_id=user?.factory_id||factories.value[0]?.id||'';form.enabled=user?.enabled??true;form.password='';show.value=true;created.value=null}
 function generate(){const bytes=crypto.getRandomValues(new Uint8Array(24));const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';form.password=Array.from(bytes,b=>alphabet[b%alphabet.length]).join('')}
-async function save(){busy.value=true;try{if(editing.value){const update={role:form.role,enabled:form.enabled};if(form.password)update.password=form.password;await api(`/api/users/${editing.value.id}`,'PATCH',update);if(form.password)created.value={username:form.username,password:form.password};else show.value=false}else{const password=form.password;await api('/api/users','POST',{username:form.username,role:form.role,password});created.value={username:form.username,password}}await load();status.value='User saved'}catch(e){status.value=e.message}finally{busy.value=false}}
+async function save(){busy.value=true;try{const factory_id=form.role==='factory_admin'?Number(form.factory_id):null;if(editing.value){const update={role:form.role,factory_id,enabled:form.enabled};if(form.password)update.password=form.password;await api(`/api/users/${editing.value.id}`,'PATCH',update);if(form.password)created.value={username:form.username,password:form.password};else show.value=false}else{const password=form.password;await api('/api/users','POST',{username:form.username,role:form.role,factory_id,password});created.value={username:form.username,password}}await load();status.value='User saved'}catch(e){status.value=e.message}finally{busy.value=false}}
 async function remove(user){if(!confirm(`Delete ${user.username}? This removes the account and signs it out.`))return;busy.value=true;try{await api(`/api/users/${user.id}`,'DELETE');await load();status.value='User deleted'}catch(e){status.value=e.message}finally{busy.value=false}}
 async function copyPassword(){try{await navigator.clipboard.writeText(created.value.password);status.value='Password copied'}catch{status.value='Select and copy the password shown below.'}}
 onMounted(load)
@@ -35,7 +35,11 @@ onMounted(load)
       </div>
       <div class="panel">
         <strong>Admin</strong>
-        <p>Can manage factory data and notifications.</p>
+        <p>Can manage data and notifications across all factories.</p>
+      </div>
+      <div class="panel">
+        <strong>Factory admin</strong>
+        <p>Can manage only the assigned factory and its data.</p>
       </div>
       <div class="panel">
         <strong>Viewer</strong>
@@ -61,7 +65,7 @@ onMounted(load)
           <tbody>
             <tr v-for="user in users" :key="user.id">
               <td>{{ user.username }}{{ user.id === currentUser.id ? " (you)" : "" }}</td>
-              <td>{{ user.role.replaceAll("_", " ") }}</td>
+              <td>{{ user.role.replaceAll("_", " ") }}<small v-if="user.factory_id"> · {{ factories.find(factory=>factory.id===user.factory_id)?.name||'Factory '+user.factory_id }}</small></td>
               <td>
                 <span class="pill" :class="{ off: !user.enabled }">{{
                   user.enabled ? "Enabled" : "Disabled"
@@ -140,6 +144,10 @@ onMounted(load)
                 <option v-for="[value, label] in roles" :key="value" :value="value">
                   {{ label }}
                 </option>
+              </select></label
+            ><label v-if="form.role==='factory_admin'"
+              >Factory<select v-model="form.factory_id" required>
+                <option v-for="factory in factories" :key="factory.id" :value="factory.id">{{ factory.name }}</option>
               </select></label
             ><label v-if="editing" class="user-checkbox"
               ><input
