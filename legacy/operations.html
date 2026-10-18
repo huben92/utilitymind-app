@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wheelworks Operations · Live utility dashboard</title>
+  <link rel="stylesheet" href="/operations.css">
+  <link rel="stylesheet" href="/console-theme.css">
+</head>
+<body>
+  <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7L12 2ZM19 17l.7 2.3L22 20l-2.3.7L19 23l-.7-2.3L16 20l2.3-.7L19 17Z"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m-14 4h3m4 0h3m-10 4h3"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 2h8l5 5v15H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 0v6h5M8 13h8m-8 4h8"/></symbol>
+    <symbol id="i-factory" viewBox="0 0 24 24"><path d="M3 21V9l6 4V9l6 4V5h6v16H3Zm12-10h6M7 17h1m4 0h1m4 0h1"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="i-route" viewBox="0 0 24 24"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M7 6h10M5 8v5a5 5 0 0 0 5 5m9-10v5a5 5 0 0 1-5 5"/></symbol>
+    <symbol id="i-machine" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M7 6V3h10v3M3 12h18M8 16h2m4 0h2"/></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4.3 18a9 9 0 1 1 15.4 0H4.3ZM12 13l4-4M7 17h.01M17 17h.01"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M10 2h4l.7 2.4 2 .9 2.2-1.2 2.8 2.8-1.2 2.2.9 2L24 12l-2.4 1-.9 2 1.2 2.2-2.8 2.8-2.2-1.2-2 .9L14 22h-4l-.7-2.4-2-.9-2.2 1.2-2.8-2.8 1.2-2.2-.9-2L0 12l2.4-1 .9-2-1.2-2.2 2.8-2.8 2.2 1.2 2-.9L10 2Z" transform="translate(1.5 0) scale(.88)"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  </svg>
+  <div class="shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#overview"><span class="brand-mark">W<span>↗</span></span><span><strong>WHEELWORKS</strong><small>OPERATIONS INTELLIGENCE</small></span></a>
+      <button class="nav-search-trigger" id="nav-search-trigger" type="button"><svg aria-hidden="true"><use href="#i-search"/></svg><span>Search pages</span><kbd>⌘ K</kbd></button>
+      <div class="nav-label">WORKSPACE</div>
+      <nav id="nav">
+        <a href="#overview" data-page="overview" class="active"><svg class="nav-icon" aria-hidden="true"><use href="#i-grid"/></svg> Overview</a>
+        <a href="#notifications" data-page="notifications"><svg class="nav-icon" aria-hidden="true"><use href="#i-bell"/></svg> Notifications <b id="alert-nav-count" class="alert-nav-count" hidden>0</b></a>
+        <a href="#ai_chat" data-page="ai_chat"><svg class="nav-icon" aria-hidden="true"><use href="#i-spark"/></svg> Chat with AI</a>
+        <a href="#map" data-page="map"><svg class="nav-icon" aria-hidden="true"><use href="#i-map"/></svg> Location map</a>
+        <a href="#daily_report" data-page="daily_report"><svg class="nav-icon" aria-hidden="true"><use href="#i-file"/></svg> Daily Report</a>
+        <a href="#monthly_report" data-page="monthly_report"><svg class="nav-icon" aria-hidden="true"><use href="#i-file"/></svg> Monthly Report</a>
+        <div class="nav-label nav-sub">MASTER DATA</div>
+        <a href="#factories" data-page="factories"><svg class="nav-icon" aria-hidden="true"><use href="#i-factory"/></svg> Factories</a>
+        <a href="#locations" data-page="locations"><svg class="nav-icon" aria-hidden="true"><use href="#i-pin"/></svg> Locations</a>
+        <a href="#production_lines" data-page="production_lines"><svg class="nav-icon" aria-hidden="true"><use href="#i-route"/></svg> Production lines</a>
+        <a href="#machines" data-page="machines"><svg class="nav-icon" aria-hidden="true"><use href="#i-machine"/></svg> Machines</a>
+        <a href="#metering" data-page="metering"><svg class="nav-icon" aria-hidden="true"><use href="#i-gauge"/></svg> Metering</a>
+        <div class="nav-label nav-sub">APPLICATION</div>
+        <a href="#app_settings" data-page="app_settings"><svg class="nav-icon" aria-hidden="true"><use href="#i-settings"/></svg> App Settings</a>
+      </nav>
+      <div class="sidebar-footer"><span class="pulse"></span><div><strong>Telemetry pipeline</strong><small id="sidebar-pipeline">Connecting to MQTT…</small></div></div>
+    </aside>
+    <button class="sidebar-backdrop" id="sidebar-backdrop" type="button" aria-label="Close navigation" hidden></button>
+    <main>
+      <header class="topbar"><div class="topbar-leading"><button id="menu-toggle" class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar"><svg aria-hidden="true"><use href="#i-menu"/></svg></button><div class="breadcrumb">WHEELWORKS <span>/</span> <span id="breadcrumb-page">OVERVIEW</span></div></div><div class="top-actions"><div class="live-badge" id="live-badge"><i></i><span>CONNECTING</span></div><div class="clock" id="clock">—</div></div></header>
+      <div class="page-heading"><h1 id="page-title">Factory utility overview</h1><p id="page-subtitle">Live usage against baseline across the production floor.</p></div>
+      <div id="error-banner" class="error-banner" hidden></div>
+
+      <section class="page" data-view="overview">
+        <div class="hero"><div><span class="eyebrow">LIVE FACTORY TELEMETRY</span><h2>A clearer view of every utility.</h2><p>Readings arrive through MQTT, are stored in ClickHouse, and are paired with PostgreSQL master data.</p><div class="hero-bottom"><span class="signal-dot"></span><span id="hero-status">Waiting for the first reading</span><span class="hero-separator">·</span><span id="hero-time">—</span></div></div><div class="hero-graphic" aria-hidden="true"><div class="ring ring-a"></div><div class="ring ring-b"></div><div class="ring ring-c"></div><div class="ring-center">ϟ</div></div></div>
+        <div id="metering-alert-banner" class="plan-alert-banner" hidden></div>
+        <div class="summary-grid" id="summary-grid"></div>
+        <section class="panel utility-summary"><div class="section-head"><div><span class="eyebrow">LIVE UTILITY SUMMARY</span><h2>Current use by category</h2><p>Live rate against each category's reporting meters. Dashed lines mark baseline and maximum; charts show the last 60 minutes.</p></div><span class="small-note">REFRESHES EVERY 5 SECONDS</span></div><div class="category-grid" id="category-grid"></div></section>
+        <div class="lower-grid"><section class="panel"><div class="panel-head"><div><span class="eyebrow">PRODUCTION FLOW</span><h2>Equipment at a glance</h2></div><a href="#map" data-jump="map" class="text-link">Open location map ↗</a></div><div id="equipment-list" class="equipment-list"></div></section><section class="panel pipeline-panel"><div class="panel-head"><div><span class="eyebrow">DATA PIPELINE</span><h2>Stream health</h2></div></div><div id="pipeline-details"></div><div class="sim-control"><div><strong>MQTT Metering Simulator</strong><small>Control the readings shown on this dashboard</small></div><a id="sim-toggle" class="button secondary" href="http://127.0.0.1:8766/">Open simulator ↗</a></div></section></div>
+      </section>
+
+      <section class="page alerts-page" data-view="notifications" hidden>
+        <div class="alerts-intro panel"><div><span class="eyebrow">UTILITY METERING</span><h2>Notifications</h2><p>Review threshold exceedances, sustained spikes, and metering patterns that may indicate a machine stopped or restarted. Confirming machine state updates its master-data status; a reading alone never changes it.</p></div><span class="detail-refresh">UPDATES EVERY 5 SECONDS</span></div>
+        <div class="alerts-toolbar"><div><strong id="alert-open-count">— open notifications</strong><span id="alert-list-status" role="status">Loading notifications…</span></div><div class="alert-filters" aria-label="Notification status"><button type="button" data-alert-filter="open" class="selected">Open</button><button type="button" data-alert-filter="resolved">History</button></div></div>
+        <div id="alert-list" class="alert-list"></div>
+        <p class="alerts-note">A missing reading is not treated as zero. Zero and sustained-maximum checks require one minute of continuous fresh readings. Threshold and machine notices are prompts for review, not confirmed fault diagnoses.</p>
+      </section>
+
+      <dialog id="alert-resolve-dialog" class="record-dialog"><form id="alert-resolve-form"><h2>Resolve notification</h2><p>Describe what you checked or corrected.</p><label>Resolution note<textarea id="alert-resolve-note" rows="4" maxlength="1000" required></textarea></label><div class="dialog-actions"><button id="alert-resolve-cancel" type="button" class="button secondary">Cancel</button><button type="submit" class="button primary">Resolve</button></div></form></dialog>
+
+      <section class="page ai-page" data-view="ai_chat" hidden>
+        <div class="ai-intro panel"><div><span class="eyebrow">UTILITY COPILOT</span><h2>Ask about factory metering</h2><p>Answers use bounded, read-only queries against PostgreSQL master data and ClickHouse telemetry. Results show their evidence and data limits.</p></div><span class="ai-advisory">ADVISORY · SIMULATED DATA</span></div>
+        <div class="ai-shell panel">
+          <div id="ai-messages" class="ai-messages" role="log" aria-live="polite"><div class="ai-welcome"><span class="ai-orb">✦</span><h3>What would you like to understand?</h3><p>Ask about current rates, recent trends, metering coverage, or which machines report the most utility use.</p><div class="ai-suggestions"><button type="button" data-prompt="Which metering points are enabled, and what utilities do they measure?">Enabled metering points</button><button type="button" data-prompt="Which machines reported the highest electricity rate in the last hour?">Highest electricity rate</button><button type="button" data-prompt="How many electricity readings arrived in the last hour, and when was the latest one?">Recent electricity coverage</button></div></div></div>
+          <form id="ai-form" class="ai-composer"><label for="ai-question" class="sr-only">Ask a utility question</label><textarea id="ai-question" rows="2" maxlength="2000" placeholder="Ask a question about utility metering…" required></textarea><button id="ai-send" type="submit" class="button primary">Send ↗</button></form>
+          <div class="ai-disclosure">The configured AI service receives your question, the approved table catalog, and query results. It cannot control factory equipment.</div>
+        </div>
+      </section>
+
+      <section class="page settings-page" data-view="app_settings" hidden>
+        <div class="settings-intro panel"><span class="eyebrow">APPLICATION CONFIGURATION</span><h2>AI connection</h2><p>Connect an OpenAI-compatible chat-completions API. The browser sends your key to this dashboard once; the key is encrypted before it is stored in PostgreSQL and is never returned to the browser.</p></div>
+        <form id="ai-settings-form" class="settings-form panel">
+          <label>AI API URL<input id="ai-api-url" type="url" placeholder="https://provider.example/v1/chat/completions" maxlength="500" required><small>Full HTTPS endpoint ending in /chat/completions. Local HTTP endpoints are supported.</small></label>
+          <label>Model name<input id="ai-model" type="text" placeholder="Model identifier from your provider" maxlength="120" required></label>
+          <label>API key<input id="ai-api-key" type="password" placeholder="Enter a key to save or replace it" autocomplete="new-password"><small id="ai-key-state">No key saved. Local services may not require one.</small></label>
+          <label class="settings-check"><input id="ai-clear-key" type="checkbox"> Remove the saved API key</label>
+          <div class="settings-actions"><button class="button primary" type="submit">Save AI settings</button><button id="ai-test" class="button secondary" type="button">Test connection</button><span id="ai-settings-status" role="status"></span></div>
+        </form>
+        <div class="settings-note panel"><strong>Data access</strong><p>Chat can read the factory, location, line, machine, metering, and dated work-plan tables in PostgreSQL, plus telemetry in ClickHouse. Queries have row and time limits. Actual production, shift attendance, tariffs, and verified anomalies are not connected yet.</p></div>
+      </section>
+
+      <section class="page category-page" data-view="category" hidden>
+        <a href="#overview" class="detail-back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg><span>Back to overview</span></a>
+        <div class="category-heading"><h1 id="category-page-title">Utility metering</h1><p>Live rate, incoming readings, and machine gauges.</p></div>
+        <div class="detail-hero panel"><div><span class="eyebrow">LIVE CATEGORY METERING</span><h2 id="detail-name">—</h2><p id="detail-description">Current rate, baseline, and maximum from the meters reporting in this category.</p></div><div class="detail-hero-stats"><div><span>CURRENT USAGE</span><strong id="detail-usage">—</strong></div><div><span>LIVE BASELINE</span><strong id="detail-baseline">—</strong></div><div><span>LIVE MAXIMUM</span><strong id="detail-max">—</strong></div><div><span>REPORTING</span><strong id="detail-reporting">—</strong></div></div></div>
+        <div class="detail-main">
+          <section class="panel trend-panel"><div class="panel-head"><div><span class="eyebrow">LAST 60 MINUTES</span><h2>Live rate trend</h2><p>One-minute average of reported rates, summed across meters. Gaps mean no readings.</p></div><span class="detail-refresh">UPDATES EVERY 2 SECONDS</span></div><div class="trend-canvas"><svg id="detail-chart" viewBox="0 0 900 270" preserveAspectRatio="none" role="img" aria-label="One-minute category usage trend with baseline and maximum"></svg><div id="detail-chart-empty" class="chart-empty" hidden>No recent readings. Start metering in the simulator to see the trend.</div></div><div class="trend-times"><span id="detail-chart-start">—</span><span id="detail-chart-mid">—</span><span id="detail-chart-end">—</span></div><div class="trend-legend"><i></i> Current rate <span class="trend-baseline-mark"></span> Baseline <span class="trend-max-mark"></span> Maximum</div></section>
+          <section class="panel share-panel">
+          <div class="panel-head"><div><span class="eyebrow">LIVE UTILITY SHARE</span><h2>Which machine uses the most?</h2><p>Each slice shows a machine's share of the current live rate. Off machines are excluded.</p></div><span class="detail-refresh">UPDATES EVERY 2 SECONDS</span></div>
+          <div class="share-body"><div class="share-graphic"><svg id="share-donut" viewBox="0 0 300 300" role="img" aria-label="Current utility usage share by machine"></svg><div id="share-empty" class="share-empty" hidden>No live usage to compare. Enable metering in the simulator.</div></div><div class="share-side"><div class="share-summary"><span>HIGHEST LIVE RATE</span><strong id="share-leader">—</strong><small id="share-leader-detail">Waiting for metering</small></div><div id="share-ranking" class="share-ranking"></div></div></div>
+          </section>
+          <aside class="panel live-feed-panel"><div class="feed-head"><div><span class="eyebrow">MQTT → CLICKHOUSE</span><h2>Live reading feed</h2><p>Newest meter readings appear at the bottom.</p></div><span id="feed-state" class="feed-state">WAITING</span></div><div id="live-feed" class="live-feed" role="log" aria-live="polite" aria-label="Incoming metering readings"></div><div class="feed-footer"><span class="signal-dot"></span><span id="feed-footer-text">Waiting for readings</span></div></aside>
+        </div>
+        <div class="section-head gauge-heading"><div><span class="eyebrow">MACHINE PERFORMANCE</span><h2>Usage by machine</h2><p>Each gauge compares the latest live rate with that machine's baseline. Select a machine to see its trend.</p></div><span id="detail-machine-count" class="small-note">—</span></div>
+        <div id="machine-gauges" class="gauge-grid"></div>
+      </section>
+
+      <section class="page" data-view="map" hidden>
+        <div class="map-toolbar panel"><div><span class="eyebrow">PRODUCTION FLOW</span><h2 id="map-location-title">Main production hall</h2><p>Left and right connections come from machine master data. This diagram shows process order, not physical floor position. Gray equipment is off or has no fresh reading.</p></div><div class="map-toolbar-right"><select id="map-location" aria-label="Select location"></select><div class="legend"><span><i class="legend-live"></i> Live</span><span><i class="legend-off"></i> Off / no data</span></div></div></div>
+        <div class="map-scroll"><div class="map-board" id="map-board"><svg class="map-lines" id="map-lines" aria-hidden="true"></svg><div id="map-columns" class="map-columns"></div></div></div>
+        <div class="map-footer"><span>FLOW START</span><span>CONNECTIONS FOLLOW MACHINE MASTER DATA</span><span>FLOW END</span></div>
+      </section>
+
+      <section class="page work-plan-page" data-view="work_plan" hidden>
+        <div class="work-plan-toolbar panel"><div><span class="eyebrow">MACHINE OPERATING PLAN</span><h2>Work Plans</h2><p>Schedule a dated work window, assign a responsible PIC, and set the expected ON/OFF state for each selected machine.</p></div><a class="button primary" href="#work_plan/new">＋ Create Work Plan</a></div>
+        <div id="work-plan-list-status" class="work-plan-status" role="status"></div>
+        <div class="table-panel panel"><div class="table-scroll"><table><thead><tr><th>DATE</th><th>TIME</th><th>DURATION</th><th>PIC</th><th>MACHINES</th><th>PLANNED OFF</th><th>STATUS</th><th></th></tr></thead><tbody id="work-plan-rows"></tbody></table></div><div id="work-plan-empty" class="table-empty" hidden>No work plans yet. Create one to set machine expectations.</div></div>
+      </section>
+
+      <section class="page work-plan-page" data-view="work_plan_editor" hidden>
+        <a href="#work_plan" class="detail-back">← Back to Work Plans</a>
+        <div class="work-plan-toolbar panel"><div><span class="eyebrow">MACHINE OPERATING PLAN</span><h2 id="work-plan-editor-title">Create Work Plan</h2><p>Select machines in the production flow and set whether each should be ON or OFF during this window. This records expectations; it does not control equipment.</p></div><span id="work-plan-editor-status" class="work-plan-status" role="status"></span></div>
+        <form id="work-plan-form">
+          <div class="work-plan-fields panel"><label>Date<input id="work-plan-date" type="date" required></label><label>Start time<input id="work-plan-start" type="time" value="08:00" required></label><label>Duration (hours)<input id="work-plan-duration" type="number" min="0.25" max="24" step="0.25" value="8" required></label><label>Responsible PIC<input id="work-plan-pic" type="text" maxlength="120" placeholder="Name of responsible person" required></label></div>
+          <div class="work-plan-map-head panel"><div><span class="eyebrow">MACHINE SELECTION</span><h2>Planned machine states</h2><p>Choose machines and switch each selected machine to planned ON or planned OFF.</p></div><label>Location<select id="work-plan-location" aria-label="Work plan location"></select></label></div>
+          <div class="map-scroll"><div class="map-board" id="work-plan-map-board"><svg class="map-lines" id="work-plan-map-lines" aria-hidden="true"></svg><div id="work-plan-map-columns" class="map-columns"></div></div></div>
+          <div class="work-plan-selected panel"><h3>Selected machines <span id="work-plan-selected-count">0</span></h3><div id="work-plan-selected-list"></div></div>
+          <div class="work-plan-actions"><button type="button" id="work-plan-delete" class="button secondary" hidden>Delete plan</button><span id="work-plan-save-state"></span><button type="submit" id="work-plan-save" class="button primary">Save Work Plan</button></div>
+        </form>
+        <div id="work-plan-analysis" class="work-plan-analysis panel" hidden></div>
+      </section>
+
+      <section class="page report-page" data-view="report" hidden>
+        <div class="report-toolbar panel"><div><span class="eyebrow">UTILITY OPERATIONS REPORT</span><h2 id="report-heading">Daily Report</h2><p>Observed utility use, machine hotspots, and metering quality for the selected period.</p></div><div class="report-controls"><label>Period<input id="report-period" type="date" aria-label="Report period"></label><label>Factory<select id="report-factory" aria-label="Report factory"><option value="">All factories</option></select></label><button id="report-refresh" type="button" class="button secondary">Update</button><a id="report-download" class="button primary" href="#" download>Download PDF ↓</a></div></div>
+        <div id="report-status" class="report-status" role="status" aria-live="polite">Choose a period to load the report.</div>
+        <div id="report-content" hidden>
+          <div class="report-meta"><span id="report-period-label">—</span><span id="report-origin">—</span><span id="report-through">—</span></div>
+          <div id="report-summary" class="summary-grid report-summary"></div>
+          <div class="report-layout"><section class="panel"><div class="panel-head"><div><span class="eyebrow">OBSERVED QUANTITIES</span><h2>Utility ledger</h2><p>Totals only cover reported intervals. Different units are not added together.</p></div></div><div class="table-scroll"><table><thead><tr><th>UTILITY</th><th>OBSERVED TOTAL</th><th>COVERAGE</th><th>BASELINE USE*</th><th>METERS</th></tr></thead><tbody id="report-utility-rows"></tbody></table></div><p class="report-footnote">*Observed quantity / current configured baseline during covered time. Indicative only; production-adjusted targets are not available.</p></section><section class="panel report-trend-panel"><div class="panel-head"><div><span class="eyebrow">TIME PROFILE</span><h2>Usage trend</h2><p id="report-trend-description">Observed quantity by local hour.</p></div><select id="report-trend-category" aria-label="Utility shown in trend"></select></div><div class="report-trend-canvas"><svg id="report-trend" viewBox="0 0 700 230" preserveAspectRatio="none" role="img" aria-label="Observed utility quantity by reporting interval"></svg><div id="report-trend-empty" class="chart-empty" hidden>No metering in this period.</div></div><div id="report-trend-times" class="report-trend-times"></div></section></div>
+          <div class="report-layout"><section class="panel"><div class="panel-head"><div><span class="eyebrow">REVIEW ITEMS</span><h2>Operational review</h2><p>Screening observations for a utility manager to check.</p></div></div><div id="report-review" class="report-list"></div></section><section class="panel"><div class="panel-head"><div><span class="eyebrow">EVIDENCE LIMITS</span><h2>Unavailable KPIs</h2><p>These require additional production, shift, or tariff data.</p></div></div><div id="report-unavailable" class="report-list"></div></section></div>
+          <section class="panel report-table-panel"><div class="panel-head"><div><span class="eyebrow">MACHINE CONTRIBUTION</span><h2>Highest observed machine per utility</h2></div></div><div class="table-scroll"><table><thead><tr><th>UTILITY</th><th>MACHINE</th><th>OBSERVED TOTAL</th><th>SHARE OF REPORTED USE</th></tr></thead><tbody id="report-machine-rows"></tbody></table></div></section>
+          <section class="panel report-table-panel"><div class="panel-head"><div><span class="eyebrow">DATA QUALITY</span><h2>Metering coverage</h2></div></div><div class="table-scroll"><table><thead><tr><th>METERING POINT</th><th>UTILITY</th><th>MACHINE</th><th>COVERAGE</th><th>READINGS</th></tr></thead><tbody id="report-meter-rows"></tbody></table></div></section>
+          <div class="report-method"><strong>Method and provenance</strong><p id="report-method-text">—</p><p>ClickHouse telemetry joined with current PostgreSQL master data. This report is advisory and does not command the production process.</p></div>
+        </div>
+      </section>
+
+      <section class="page" data-view="master" hidden>
+        <div class="master-intro panel"><div><span class="eyebrow">POSTGRESQL MASTER DATA</span><h2 id="master-title">Factories</h2><p id="master-description">Manage the factory hierarchy and metering baselines.</p></div><button id="add-record" class="button primary">＋ Add record</button></div>
+        <div class="table-panel panel"><div class="table-tools"><label class="search">⌕ <input id="table-search" type="search" placeholder="Search records" aria-label="Search records"></label><span id="record-count">0 records</span></div><div class="table-scroll"><table><thead id="master-head"></thead><tbody id="master-body"></tbody></table></div><div id="table-empty" class="table-empty" hidden>No matching records.</div></div>
+      </section>
+      <footer>WHEELWORKS · OPERATIONS PILOT <span>Simulated MQTT telemetry · local Docker stack</span></footer>
+    </main>
+  </div>
+  <dialog id="record-dialog"><form id="record-form"><div class="dialog-head"><div><span class="eyebrow">MASTER DATA</span><h2 id="dialog-title">Add record</h2></div><button type="button" id="close-dialog" aria-label="Close" class="icon-button">×</button></div><div id="form-fields" class="form-fields"></div><div class="dialog-actions"><button type="button" id="cancel-dialog" class="button secondary">Cancel</button><button type="submit" class="button primary">Save record</button></div></form></dialog>
+  <dialog id="machine-dialog" class="machine-dialog" aria-labelledby="machine-dialog-title"><div class="dialog-head"><div><span class="eyebrow">MACHINE LIVE TREND</span><h2 id="machine-dialog-title">—</h2><p id="machine-dialog-subtitle">—</p></div><button type="button" id="close-machine-dialog" aria-label="Close machine trend" class="icon-button">×</button></div><div class="machine-dialog-stats"><div><span>CURRENT RATE</span><strong id="machine-dialog-current">—</strong></div><div><span>BASELINE</span><strong id="machine-dialog-baseline">—</strong></div><div><span>MAXIMUM</span><strong id="machine-dialog-max">—</strong></div><div><span>STATUS</span><strong id="machine-dialog-status">—</strong></div></div><div class="machine-trend-heading"><div><span class="eyebrow">LAST 60 MINUTES</span><h3>Utility flow rate</h3><p>One-minute average across this machine's metering points. Gaps mean no readings.</p></div><span class="detail-refresh">UPDATES EVERY 2 SECONDS</span></div><div class="machine-chart-canvas"><svg id="machine-chart" viewBox="0 0 900 270" preserveAspectRatio="none" role="img" aria-label="One-minute machine utility rate trend with baseline and maximum"></svg><div id="machine-chart-empty" class="chart-empty" hidden>No readings in the last hour for this machine.</div></div><div class="trend-times"><span id="machine-chart-start">—</span><span id="machine-chart-mid">—</span><span id="machine-chart-end">—</span></div><div class="trend-legend"><i></i> Machine rate <span class="trend-baseline-mark"></span> Machine baseline <span class="trend-max-mark"></span> Machine maximum</div></dialog>
+  <dialog id="nav-search-dialog" class="nav-search-dialog" aria-label="Search pages"><div class="nav-search-field"><svg aria-hidden="true"><use href="#i-search"/></svg><input id="nav-search-input" type="search" placeholder="Search dashboard pages…" aria-label="Search dashboard pages" autocomplete="off"><button id="nav-search-close" type="button" aria-label="Close search">Esc</button></div><div id="nav-search-results" class="nav-search-results"></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/operations.js" defer></script>
+</body>
+</html>
