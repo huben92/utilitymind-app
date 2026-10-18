@@ -36,7 +36,7 @@ watch(()=>props.category,closeMachine)
 const timer=setInterval(()=>{if(selectedId.value)fetchTrend()},2000)
 onUnmounted(()=>clearInterval(timer))
 const gaugeTicks=[0,25,50,75,100].map(value=>{const a=(135+value*2.7)*Math.PI/180;return {value,x1:110+79*Math.cos(a),y1:100+79*Math.sin(a),x2:110+88*Math.cos(a),y2:100+88*Math.sin(a),tx:110+93*Math.cos(a),ty:104+93*Math.sin(a)}})
-function gauge(machine){const reporting=machine.meters.filter(m=>m.status==='live'&&m.reading),current=reporting.reduce((n,m)=>n+Number(m.reading.value),0),target=reporting.reduce((n,m)=>n+Number(m.historical_baseline?.expected??m.baseline),0),percent=target?current/target*100:0,fill=reporting.length?Math.max(0,Math.min(100,percent)):0,a=(135+fill*2.7)*Math.PI/180;return {reporting,current,target,percent,fill,needleX:110+49*Math.cos(a),needleY:100+49*Math.sin(a)}}
+function gauge(machine){const reporting=machine.meters.filter(m=>m.status==='live'&&m.reading),current=reporting.reduce((n,m)=>n+Number(m.reading.value),0),target=machine.meters.filter(m=>m.enabled).reduce((n,m)=>n+Number(m.max_value||0),0),percent=target?current/target*100:0,fill=reporting.length?Math.max(0,Math.min(100,percent)):0,a=(135+fill*2.7)*Math.PI/180;return {reporting,current,target,percent,fill,needleX:110+49*Math.cos(a),needleY:100+49*Math.sin(a)}}
 const feed = computed(()=>[...(props.detail?.events||[])].reverse())
 </script>
 <template>
@@ -235,7 +235,7 @@ const feed = computed(()=>[...(props.detail?.events||[])].reverse())
         class="gauge-card panel"
         :class="{
           off: machine.status !== 'live',
-          'over-baseline':
+          'over-maximum':
             gauge(machine).current > gauge(machine).target && gauge(machine).target > 0,
         }"
         role="button"
@@ -261,7 +261,7 @@ const feed = computed(()=>[...(props.detail?.events||[])].reverse())
           <svg
             viewBox="0 0 220 205"
             role="img"
-            :aria-label="`${machine.name}: ${fmt(gauge(machine).percent)} percent of baseline`"
+            :aria-label="`${machine.name}: ${fmt(gauge(machine).percent)} percent of maximum`"
           >
             <path class="gauge-track" d="M57 153 A75 75 0 1 1 163 153" pathLength="100" />
             <path
@@ -293,7 +293,7 @@ const feed = computed(()=>[...(props.detail?.events||[])].reverse())
                 ? `${fmt(gauge(machine).percent)}%`
                 : "—"
             }}</strong
-            ><span>OF BASELINE</span>
+            ><span>OF MAXIMUM</span>
           </div>
         </div>
         <div class="gauge-reading">
