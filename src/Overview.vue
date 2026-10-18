@@ -28,6 +28,7 @@ const categories = computed(() => [...new Set(sensors.value.filter(s => s.meter_
 const newest = computed(() => live.value.map(s => s.reading?.observed_at).filter(Boolean).sort().at(-1))
 const featured = computed(() => machines.value.filter(m => m.sensors?.length).slice(0,7))
 const icons = { Electricity: Zap, 'Compressed Air': Wind, 'Clean Water': Droplets, 'Natural Gas': Flame, Diesel: Fuel, 'Chilled Water': Snowflake, 'Steam/Hot Water': Flame }
+const simulatorUrl = import.meta.env.VITE_SIMULATOR_URL ?? (import.meta.env.BASE_URL === '/dashboard/' ? 'http://127.0.0.1:8766/' : '')
 </script>
 <template>
   <section class="page">
@@ -271,12 +272,12 @@ const icons = { Electricity: Zap, 'Compressed Air': Wind, 'Clean Water': Droplet
           <span>{{ label }}</span
           ><strong>{{ value }}</strong>
         </div>
-        <div class="sim-control">
+        <div v-if="simulatorUrl" class="sim-control">
           <div>
             <strong>MQTT Metering Simulator</strong
             ><small>Control the readings shown on this dashboard</small>
           </div>
-          <a class="button secondary" href="http://127.0.0.1:8766/"
+          <a class="button secondary" :href="simulatorUrl"
             >Open simulator <ArrowUpRight class="inline-icon" :size="14" aria-hidden="true"
           /></a>
         </div>

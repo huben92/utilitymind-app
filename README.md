@@ -22,3 +22,9 @@ git clone https://github.com/huben92/utilitymind-simulator.git simulator
 ```
 
 Run the stack from `api/` using its [setup guide](https://github.com/huben92/utilitymind-api#local-setup). All pilot telemetry and history are synthetic. The dashboard provides information and recommendations; it does not control machinery or utility supply.
+
+## Firebase Hosting
+
+The Firebase project is `utilitymind-wheelworks`. Build the root-path version with `npm run build:firebase`. `firebase.json` serves `dist/` and sends `/api/**` and `/simulator/**` to the `utilitymind-api` Cloud Run gateway in `us-central1`; deploy Hosting only after that service is healthy. The app requires a working API, PostgreSQL, ClickHouse, and MQTT ingestion. A static Hosting deploy by itself will show the login screen but cannot authenticate or display live data.
+
+The simulator button is local by default. Set `VITE_SIMULATOR_URL=/simulator/` for the cloud build once the authenticated gateway is running. Do not point a deployed site at `127.0.0.1`.
