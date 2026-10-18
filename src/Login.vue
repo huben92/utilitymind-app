@@ -11,7 +11,7 @@ const form = reactive({ username: '', password: '' })
     <form class="login-card panel w-full" @submit.prevent="emit('submit', { ...form })">
       <div class="login-brand">
         <span class="brand-mark">W<ArrowUpRight :size="11" aria-hidden="true" /></span>
-        <div><strong>WHEELWORKS</strong><small>OPERATIONS INTELLIGENCE</small></div>
+        <div><strong>UTILITYMIND</strong><small>OPERATIONS INTELLIGENCE</small></div>
       </div>
       <span class="eyebrow">SECURE DASHBOARD ACCESS</span>
       <h1>Sign in</h1>

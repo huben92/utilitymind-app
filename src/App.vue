@@ -204,7 +204,7 @@ onUnmounted(()=>{window.removeEventListener('hashchange',syncHash);window.remove
         <p>{{ descriptions[page] }}</p>
       </div>
       <div v-if="error" class="error-banner">{{ error }}</div>
-      <Overview v-if="page === 'overview'" :data="data" :trends="trends" /><CategoryDetail
+      <Overview v-if="page === 'overview'" :data="data" :trends="trends" :can-open-simulator="auth.role==='super_admin'||auth.role==='admin'" /><CategoryDetail
         v-else-if="page === 'category'"
         :key="category"
         :category="category"

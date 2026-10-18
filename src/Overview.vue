@@ -5,7 +5,7 @@ import ChartRangeControls from './ChartRangeControls.vue'
 import { useChartRange } from './useChartRange'
 import { fmt, statusText } from './lib'
 import { ArrowUpRight, Droplets, Flame, Fuel, Gauge, Snowflake, Wind, Zap } from '@lucide/vue'
-const props = defineProps({ data: Object, trends: Object })
+const props = defineProps({ data: Object, trends: Object, canOpenSimulator: {type:Boolean,default:true} })
 const sensors = computed(() => props.data?.sensors || [])
 const machines = computed(() => props.data?.machines || [])
 const live = computed(() => sensors.value.filter(s => s.status === 'live'))
@@ -272,7 +272,7 @@ const simulatorUrl = import.meta.env.VITE_SIMULATOR_URL ?? (import.meta.env.BASE
           <span>{{ label }}</span
           ><strong>{{ value }}</strong>
         </div>
-        <div v-if="simulatorUrl" class="sim-control">
+        <div v-if="simulatorUrl && canOpenSimulator" class="sim-control">
           <div>
             <strong>MQTT Metering Simulator</strong
             ><small>Control the readings shown on this dashboard</small>
